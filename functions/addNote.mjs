@@ -19,7 +19,9 @@ export const handler = async (event) => {
     await client.send(command);
     return {
         statusCode: 200,
-        body: JSON.stringify({ success: true, message: "OK" }),
+        body: JSON.stringify({ 
+            success: true, 
+            message: "OK" }),
     };
     } catch (err) {
     console.error(err);
