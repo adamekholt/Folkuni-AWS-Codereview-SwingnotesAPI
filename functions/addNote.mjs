@@ -2,38 +2,30 @@ import { PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { client } from "../services/db.mjs";
 
 export const handler = async (event) => {
-    const note = JSON.parse(event.body || "{}");
-    const sk = `noteid-${Date.now()}`;
-    const timestamp = new Date().toISOString();
-    const username = event.pathParameters?.username;
+    const body = JSON.parse(event.body);
 
     const command = new PutItemCommand({
         TableName: "swingnotes-api",
         Item: {
-            pk: { S: username },
-            sk: { S: sk },
-            title: { S: note.title },
-            text: { S: note.text },
-            createdAt: { S: timestamp },
-            modifiedAt: { S: timestamp }
+            pk: { S: body.username },
+            sk: { S: `id-${new Date().toISOString()}`},
+            title: { S: body.title },
+            text: { S: body.text },
+            createdAt: { S: new Date().toISOString()},
         }
     });
 
+    try {
     await client.send(command);
-
     return {
         statusCode: 200,
-        body: JSON.stringify({
-        success: true,
-        message: "New note added",
-        note: {
-          pk: username, 
-          sk: sk,
-          title: note.title,
-          text: note.text,
-          createdAt: timestamp,
-          modifiedAt: timestamp
-        }
-        })
-  };
+        body: JSON.stringify({ success: true, message: "OK" }),
+    };
+    } catch (err) {
+    console.error(err);
+    return {
+        statusCode: 400,
+        body: JSON.stringify({ success: false, message: "Bad request" }),
+    };
+    }
 };
