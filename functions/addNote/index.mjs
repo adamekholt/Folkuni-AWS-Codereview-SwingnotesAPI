@@ -12,7 +12,7 @@ export const handler = async (event) => {
             title: { S: body.title },
             text: { S: body.text },
             createdAt: { S: new Date().toISOString()},
-            modifieddAt: { S: new Date().toISOString()},
+            modifiedAt: { S: new Date().toISOString()},
         }
     });
 
