@@ -1,5 +1,5 @@
 import { PutItemCommand } from "@aws-sdk/client-dynamodb";
-import { client } from "../services/db.mjs";
+import { client } from "../../services/db.mjs";
 
 export const handler = async (event) => {
     const body = JSON.parse(event.body);
@@ -12,6 +12,7 @@ export const handler = async (event) => {
             title: { S: body.title },
             text: { S: body.text },
             createdAt: { S: new Date().toISOString()},
+            modifieddAt: { S: new Date().toISOString()},
         }
     });
 
@@ -27,7 +28,9 @@ export const handler = async (event) => {
     console.error(err);
     return {
         statusCode: 400,
-        body: JSON.stringify({ success: false, message: "Bad request" }),
+        body: JSON.stringify({ 
+            success: false, 
+            message: "Bad request" }),
     };
     }
 };
